@@ -5,4 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # This line tells the project to look inside your accounts folder
     path('', include('accounts.urls')), 
+    path('', include('main.urls')),
 ]
