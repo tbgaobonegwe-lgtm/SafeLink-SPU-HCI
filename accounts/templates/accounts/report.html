@@ -1,0 +1,97 @@
+<html>
+
+<div style="background-color: #0056b3; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif;">
+    <h2 style="margin: 0; font-size: 20px; letter-spacing: 1px;">🛡️ SafeLink</h2>
+    <span style="font-size: 12px; opacity: 0.8;">Kimberley Community</span>
+</div>
+    <body bgcolor="#f8f9fa">
+<div style="padding: 20px; font-family: sans-serif; max-width: 400px; margin: auto;">
+    <h1 style="border-bottom: 2px solid #ccc;">Report</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label><strong>Type:</strong></label><br>
+        <select name="incident_type" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+            <option value="suspicious">Suspicious Activity</option>
+            <option value="fire">Fire</option>
+            <option value="breakin">Break-in</option>
+            <option value="breakin">Sexual Assault</option>
+            <option value="breakin">Kidnapping</option>
+            <option value="breakin">Domestic Violence</option>
+            <option value="breakin">Child Abuse</option>
+            <option value="other">Other</option>
+        </select>
+
+        <label><strong>Detected Location:</strong></label><br>
+<div style="display: flex; align-items: center; margin-bottom: 15px;">
+    <input type="text" name="location" value="{{ location }}" readonly 
+           style="flex: 1; padding: 10px; background-color: #e9ecef; border: 1px solid #ced4da; border-radius: 5px; color: #495057;">
+    <span style="margin-left: 10px; font-size: 20px;">📍</span>
+</div>
+<small style="color: green; display: block; margin-top: -10px; margin-bottom: 15px;">
+    ✓ GPS Location Verified
+</small>
+        <label><strong>Notes(Optional):</strong></label><br>
+        <textarea name="notes" rows="4" style="width: 100%; padding: 10px; margin-bottom: 20px;"></textarea>
+
+        <button type="submit" id="submitBtn" 
+                style="width: 100%; padding: 15px; border-radius: 50px; border: 2px solid black; cursor: pointer; font-weight: bold; font-size: 16px;">
+            SUBMIT
+        </button>
+    </form>
+
+    <div id="popup" style="display: none; margin-top: 20px; color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; text-align: center;">
+        Report submitted successfully!
+    </div>
+</div>
+
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function(e) {
+        // 1. ARE YOU SURE? (HCI Error Prevention)
+        const userConfirmed = confirm("Are you sure you want to submit this report?\n\nThis will notify Kimberley Safety Coordination.");
+        
+        if (!userConfirmed) {
+            e.preventDefault(); // Stop everything if they click 'Cancel'
+            return;
+        }
+
+        e.preventDefault(); // Stop the page from refreshing immediately
+        
+        const btn = this;
+        const popup = document.getElementById('popup');
+        
+        // Generate a simple reference number
+        const refNumber = "#SL-" + Math.floor(1000 + Math.random() * 9000);
+
+        // 2. Visual Feedback
+        btn.style.backgroundColor = '#28a745';
+        btn.style.color = 'white'; // Ensure text is visible on green
+        btn.innerText = "SENT ✓";
+        btn.disabled = true;
+        
+        // 3. Show Success Message WITH Reference Number
+        popup.style.display = 'block';
+        popup.innerHTML = `
+            <strong>Report Submitted Successfully!</strong><br>
+            Reference: <strong>${refNumber}</strong><br>
+            <small>Returning to Home in 3 seconds...</small>
+        `;
+
+        // 4. Auto Redirect
+        setTimeout(function() {
+            window.location.href = "{% url 'home' %}";
+        }, 3000);
+    });
+</script>
+
+
+<div style="text-align: center; margin-top: 15px;">
+    <a href="{% url 'home' %}" style="color: #666; font-size: 14px; text-decoration: none;">
+        Cancel and go back
+    </a>
+</div>
+
+
+</body>
+</html>
